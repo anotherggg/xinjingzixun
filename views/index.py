@@ -1,4 +1,4 @@
-from flask import render_template, jsonify, request
+from flask import render_template, jsonify, request, session
 
 from . import index_blu
 
@@ -10,7 +10,10 @@ from models.index import News
 @index_blu.route("/")
 def index():
     clicks_top_6_news = db.session.query(News).order_by(-News.clicks).limit(6)
-    return render_template("index.html", clicks_top_6_news=clicks_top_6_news)
+    # 查询用户是否已经登录
+    user_id = session.get("uesr_id",0)
+    nick_name = session.get("nick_name","")
+    return render_template("index.html", clicks_top_6_news=clicks_top_6_news,nick_name = nick_name)
 
 
 @index_blu.route("/newslist")
