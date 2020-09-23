@@ -29,7 +29,7 @@ def register():
     try:
         db.session.add(user)
         db.session.commit()
-
+        # 注册成功后，立刻认为登录成功，也就是说需要进行状态保持
         session['user_id'] = user.id
         session['nick_name'] = mobile
 

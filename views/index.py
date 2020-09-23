@@ -34,17 +34,6 @@ def category_news():
         "totalPage": paginate.pages,
         "newsList": [news.to_dict() for news in paginate.items]
     }
-    # for news in paginate.items:
-    #     temp_dit = dict()
-    #     temp_dit["id"] = news.id
-    #     temp_dit["digest"] = news.digest
-    #     temp_dit["create_time"] = news.create_time
-    #     temp_dit["index_image_url"] = news.index_image_url
-    #     temp_dit["source"] = news.source
-    #     temp_dit["title"] = news.title
-    #
-    #     # 将得到的字典，添加到ret中newsList对应的列表中
-    #     ret['newsList'].append(temp_dit)
 
     return jsonify(ret)
 
