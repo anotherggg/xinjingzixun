@@ -1,9 +1,10 @@
-from flask import request
+from flask import request, jsonify
 
 from models import db
 from models.index import User
 
 from . import passport_blu
+
 
 @passport_blu.route("/passport/register", methods=["GET", "POST"])
 def register():
@@ -28,10 +29,25 @@ def register():
     try:
         db.session.add(user)
         db.session.commit()
-        ret = "注册成功..."
+        ret = {
+            "errno": 0,
+            "errmsg": "注册成功"
+        }
     except Exception as ret:
-        print("---->",ret)
+        print("---->", ret)
         db.session.rollback()
-        ret = "注册失败..."
+        ret = {
+            "errno": 0,
+            "errmsg": "注册失败..."
+        }
 
-    return ret
+    return jsonify(ret)
+
+
+@passport_blu.route("/passport/login", methods=["GET", "POST"])
+def login():
+    ret = {
+        "errno": 0,
+        "errno": "登录成功"
+    }
+    return jsonify(ret)
