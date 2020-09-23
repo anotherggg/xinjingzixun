@@ -1,4 +1,4 @@
-from flask import request, jsonify
+from flask import request, jsonify, session
 
 from models import db
 from models.index import User
@@ -29,6 +29,10 @@ def register():
     try:
         db.session.add(user)
         db.session.commit()
+
+        session['user_id'] = user.id
+        session['nick_name'] = mobile
+
         ret = {
             "errno": 0,
             "errmsg": "注册成功"
@@ -46,8 +50,23 @@ def register():
 
 @passport_blu.route("/passport/login", methods=["GET", "POST"])
 def login():
-    ret = {
-        "errno": 0,
-        "errno": "登录成功"
-    }
+    # 1. 提取登录时的用户名，密码
+    mobile = request.json.get("mobile")
+    password = request.json.get("password")
+    # 2.查询，如果存在表示登录成功，否则失败
+    user = db.session.query(User).filter(User.mobile == mobile , User.password_hash == password).first()
+    if user:
+        ret = {
+            "errno": 0,
+            "errmsg": "登录成功"
+
+        }
+        session['user_id'] = user.id
+        session['nick_name'] = mobile
+    else:
+        ret = {
+            "errno": 0,
+            "errmsg": "用户名或者密码错误"
+        }
+
     return jsonify(ret)
