@@ -19,8 +19,8 @@
             <!-- 用户登录后显示下面，隐藏上面 -->
             <div class="user_login fr">
                 <img src="/static/index/images/person01.png" class="lgin_pic">
-                <a href="#">用户张三</a>
-                <a href="#">退出</a>
+                <a href="#">{{ nick_name }}</a>
+                <a href="/passport/logout">退出</a>
             </div>
         </div>
     </div>
@@ -146,8 +146,8 @@
         <div class="rank_con fr">
             <div class="author_card">
                 <a href="#" class="author_pic"><img src="/static/index/images/user_pic.png" alt="author_pic"></a>
-                <a href="#" class="author_name">张大山</a>
-                <div class="author_resume">张大山的简介,张大山</div>
+                <a href="#" class="author_name">{{ nick_name }}</a>
+                <div class="author_resume">{{ nick_name }}的简介,{{ nick_name }}</div>
                 <div class="writings"><span>总篇数</span><b>23</b></div>
                 <div class="follows"><span>粉丝</span><b>36</b></div>
                 <a href="javascript:;" class="focus fr">关注</a>

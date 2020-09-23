@@ -1,4 +1,4 @@
-from flask import request, jsonify, session
+from flask import request, jsonify, session, redirect, url_for
 
 from models import db
 from models.index import User
@@ -70,3 +70,9 @@ def login():
         }
 
     return jsonify(ret)
+
+@passport_blu.route("/passport/logout", methods=["GET", "POST"])
+def logout():
+    # 清空登录状态
+    session.clear()
+    return redirect(url_for('index_blu.index'))

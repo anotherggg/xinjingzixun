@@ -51,6 +51,10 @@ def category_news():
 
 @index_blu.route("/detail/<int:news_id>")
 def detail(news_id):
+    clicks_top_6_news = db.session.query(News).order_by(-News.clicks).limit(6)
+    # 查询用户是否已经登录
+    user_id = session.get("uesr_id", 0)
+    nick_name = session.get("nick_name", "")
     # 查询点击量最多的前6个新闻信息
     news = db.session.query(News).filter(News.id == news_id).first()
-    return render_template("detail.html", news=news)
+    return render_template("detail.html", news=news,nick_name=nick_name)
