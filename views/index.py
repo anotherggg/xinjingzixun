@@ -40,7 +40,6 @@ def category_news():
 
 @index_blu.route("/detail/<int:news_id>")
 def detail(news_id):
-    clicks_top_6_news = db.session.query(News).order_by(-News.clicks).limit(6)
     # 查询点击量最多的前6个新闻信息
     news = db.session.query(News).filter(News.id == news_id).first()
     # 查询这个新闻的作者
@@ -50,4 +49,15 @@ def detail(news_id):
     # 查询用户是否已经登录
     user_id = session.get("uesr_id", 0)
     nick_name = session.get("nick_name", "")
-    return render_template("detail.html", news=news,nick_name=nick_name,news_author=news_author,news_authornews_num=news_author.news_num,news_authorfollwer_num=news_author.follwer_num)
+
+    # 计算当前登录用户是否已经关注了这个新闻的作者
+    news_author_followers_id = [x.id for x in news_author.followers]
+    if user_id in news_author_followers_id:
+        news_author.can_follow = False  # 已经关注了作者，就不能在关注了
+    else:
+        news_author.can_follow = True  # 可以关注
+    return render_template("detail.html", news=news,nick_name=nick_name,news_author=news_author,news_authornews_num=news_author.news_num,news_authorfollwer_num=news_author.follwer_num,news_authorcan_follow = news_author.can_follow)
+
+@index_blu.route("/user/follow")
+def follow():
+    pass
