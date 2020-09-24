@@ -3,6 +3,7 @@ from flask import request, jsonify, session, redirect, url_for, make_response
 from models import db
 from models.index import User
 
+
 from . import passport_blu
 
 
@@ -79,9 +80,17 @@ def logout():
 
 @passport_blu.route("/passport/image_code")
 def image_code():
+    from utils.captcha.captcha import captcha
+
     # 读取一个图片
     with open("./yanzhengma.png",'rb') as f:
         image = f.read()
+
+    # 生成验证码
+    # hash值 验证码值 图片内容
+    name,text,image = captcha.generate_captcha()
+
+    print("刚刚生成的验证码",text)
 
     # 返回响应内容
     resp = make_response(image)
