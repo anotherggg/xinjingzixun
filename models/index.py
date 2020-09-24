@@ -47,6 +47,12 @@ class Category(db.Model):
     create_time = db.Column(db.DateTime, default=datetime.now)  # 记录的创建时间
     update_time = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)  # 记录的更新时间
 
+class Follow(db.Model):
+    """用关注表"""
+    __tablename__ = "follow"
+    followed_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)  # 被关注人的id
+    follower_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)  # 被粉丝id
+
 class User(db.Model):
     """用户"""
     __tablename__ = "user"
@@ -67,3 +73,12 @@ class User(db.Model):
         ),
         default="MAN"
     )
+    followers = db.relationship('User',
+                                secondary=Follow.__tablename__,
+                                primaryjoin=(id == Follow.followed_id),
+                                secondaryjoin=(id == Follow.follower_id),
+                                backref=db.backref('followed', lazy='dynamic'),
+                                lazy='dynamic')
+
+
+
