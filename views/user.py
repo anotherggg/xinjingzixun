@@ -1,4 +1,4 @@
-from flask import jsonify, request, session, render_template
+from flask import jsonify, request, session, render_template, redirect, url_for
 
 from models import db
 from models.index import User, Follow
@@ -70,6 +70,9 @@ def follow():
 @user_blu.route("/user/center")
 def user_center():
     nick_name = session.get("nick_name")
+    # 如果用户未登录，禁止访问用户中心
+    if not nick_name:
+        return redirect(url_for("index_blu.index"))
     return render_template("user.html",nick_name=nick_name)
 
 
