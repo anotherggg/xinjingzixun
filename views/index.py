@@ -47,7 +47,7 @@ def detail(news_id):
     news_author.news_num = news_author.news.count()
     news_author.follwer_num = news_author.followers.count()
     # 查询用户是否已经登录
-    user_id = session.get("uesr_id", 0)
+    user_id = session.get("user_id", 0)
     nick_name = session.get("nick_name", "")
 
     # 计算当前登录用户是否已经关注了这个新闻的作者
@@ -56,8 +56,5 @@ def detail(news_id):
         news_author.can_follow = False  # 已经关注了作者，就不能在关注了
     else:
         news_author.can_follow = True  # 可以关注
-    return render_template("detail.html", news=news,nick_name=nick_name,news_author=news_author,news_authornews_num=news_author.news_num,news_authorfollwer_num=news_author.follwer_num,news_authorcan_follow = news_author.can_follow)
-
-@index_blu.route("/user/follow")
-def follow():
-    pass
+    print(22222222222222222222222222222222222222222222222222222222222222222,news_author.can_follow)
+    return render_template("detail.html", news=news,nick_name=nick_name,news_author=news_author)
