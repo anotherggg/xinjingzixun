@@ -28,6 +28,7 @@ $(function () {
                     $(".user_center_pic>img", parent.document).attr("src", avatar_url);
                     $(".user_login>img", parent.document).attr("src", avatar_url);
                 }
+
                 else {
                     // `上传头像`失败
                     alert(resp.errmsg);

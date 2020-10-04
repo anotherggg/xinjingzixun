@@ -1,5 +1,6 @@
 from flask import jsonify, request, session, render_template, redirect, url_for
-
+from PIL import Image
+from main import basedir
 from models import db
 from models.index import User, Follow
 from . import user_blu
@@ -73,7 +74,7 @@ def user_center():
     # 如果用户未登录，禁止访问用户中心
     if not nick_name:
         return redirect(url_for("index_blu.index"))
-    return render_template("user.html",nick_name=nick_name)
+    return render_template("user.html", nick_name=nick_name)
 
 
 @user_blu.route("/user/user_base_info")
@@ -153,3 +154,59 @@ def user_password():
         }
 
     return jsonify(ret)
+
+
+@user_blu.route("/user_pic", methods=["GET", "POST"])
+def user_head_portrait():
+    user_id = session.get("user_id")
+    user = db.session.query(User).filter(User.id == user_id).first()
+    if user.avatar_url:
+        url = user.avatar_url
+        img = open(url, "rb")
+        image = img.read()
+        img.close()
+    else:
+        img = open('./static/index/images/user_pic.png', "rb")
+        image = img.read()
+        img.close()
+    return image
+
+@user_blu.route("/user/user_pic_info", methods=["GET", "POST"])
+def user_pic_info():
+    user_id = session.get("user_id")
+    user = db.session.query(User).filter(User.id == user_id).first()
+    # avatar_url = user.avatar_url
+    # print(avatar_url,'-'*50)
+    return render_template("user_pic_info.html")
+
+
+@user_blu.route("/user/avatar", methods=["POST", "POST"])
+def avatar():
+    user_id = session.get("user_id")
+    if user_id:
+        user = db.session.query(User).filter(User.id == user_id).first()
+        # avatar_url = user.avatar_url
+        avatar = request.files.get('avatar')
+        user_image = Image.open(avatar)
+        url = "./static/index/images/"
+        image_file = url + str(user.id)+'head_pic.png'
+        user.avatar_url = image_file
+        user_image.save(user.avatar_url)
+        db.session.commit()
+        ret = {
+            "errno":0,
+            "errmsg":"成功",
+            "avatar_url": image_file
+            }
+        return jsonify(ret)
+    else:
+        ret = {
+            "errno": 4002,
+            "errmsg": "失败"
+        }
+        return jsonify(ret)
+
+
+
+
+
