@@ -1,3 +1,6 @@
+import hashlib
+from time import ctime
+
 from flask import jsonify, request, session, render_template, redirect, url_for
 from PIL import Image
 from main import basedir
@@ -171,40 +174,76 @@ def user_head_portrait():
         img.close()
     return image
 
-@user_blu.route("/user/user_pic_info", methods=["GET", "POST"])
+# @user_blu.route("/user/user_pic_info", methods=["GET", "POST"])
+# def user_pic_info():
+#     user_id = session.get("user_id")
+#     user = db.session.query(User).filter(User.id == user_id).first()
+#     # avatar_url = user.avatar_url
+#     # print(avatar_url,'-'*50)
+#     return render_template("user_pic_info.html")
+#
+#
+# @user_blu.route("/user/avatar", methods=["POST", "POST"])
+# def avatar():
+#     user_id = session.get("user_id")
+#     if user_id:
+#         user = db.session.query(User).filter(User.id == user_id).first()
+#         # avatar_url = user.avatar_url
+#         avatar = request.files.get('avatar')
+#         user_image = Image.open(avatar)
+#         url = "./static/index/images/"
+#         image_file = url + str(user.id)+'head_pic.png'
+#         user.avatar_url = image_file
+#         user_image.save(user.avatar_url)
+#         db.session.commit()
+#         ret = {
+#             "errno":0,
+#             "errmsg":"成功",
+#             "avatar_url": image_file
+#             }
+#         return jsonify(ret)
+#     else:
+#         ret = {
+#             "errno": 4002,
+#             "errmsg": "失败"
+#         }
+#         return jsonify(ret)
+
+
+@user_blu.route("/user/user_pic_info")
 def user_pic_info():
     user_id = session.get("user_id")
     user = db.session.query(User).filter(User.id == user_id).first()
-    # avatar_url = user.avatar_url
-    # print(avatar_url,'-'*50)
-    return render_template("user_pic_info.html")
+    return render_template("user_pic_info.html",user=user)
 
-
-@user_blu.route("/user/avatar", methods=["POST", "POST"])
-def avatar():
-    user_id = session.get("user_id")
-    if user_id:
+@user_blu.route("/user/avatar", methods=["POST"])
+def user_avatar():
+    f = request.files.get("avatar")
+    if f:
+        # 为了防止多个用户上传的图片名字相同，需要将用户的图片计算出一个随机的用户名，防止冲突
+        file_hash = hashlib.md5()
+        file_hash.update((f.filename+ctime()).encode("utf-8"))
+        file_name = file_hash.hexdigest() + f.filename[f.filename.rfind("."):]
+        avatar_url = file_name
+        # 将路径改为static/upload下
+        file_name = "./static/upload"+file_name
+        f.save(file_name)
+        # 修改数据中的用户头像链接
+        user_id = session.get("user_id")
         user = db.session.query(User).filter(User.id == user_id).first()
-        # avatar_url = user.avatar_url
-        avatar = request.files.get('avatar')
-        user_image = Image.open(avatar)
-        url = "./static/index/images/"
-        image_file = url + str(user.id)+'head_pic.png'
-        user.avatar_url = image_file
-        user_image.save(user.avatar_url)
+        user.avatar_url = avatar_url
         db.session.commit()
         ret = {
-            "errno":0,
-            "errmsg":"成功",
-            "avatar_url": image_file
-            }
-        return jsonify(ret)
+            "errno": 0,
+            "errmsg": "成功"
+        }
     else:
         ret = {
-            "errno": 4002,
-            "errmsg": "失败"
+            "errno": 4003,
+            "errmsg": "上传传失败"
         }
-        return jsonify(ret)
+
+    return jsonify(ret)
 
 
 
