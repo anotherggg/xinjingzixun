@@ -224,11 +224,11 @@ def user_avatar():
     if f:
         # 为了防止多个用户上传的图片名字相同，需要将用户的图片计算出一个随机的用户名，防止冲突
         file_hash = hashlib.md5()
-        file_hash.update((f.filename+ctime()).encode("utf-8"))
+        file_hash.update((f.filename+str(ctime())).encode("utf-8"))
         file_name = file_hash.hexdigest() + f.filename[f.filename.rfind("."):]
         avatar_url = file_name
         # 将路径改为static/upload下
-        file_name = "./static/upload"+file_name
+        file_name = "./static/upload/"+file_name
         f.save(file_name)
         # 修改数据中的用户头像链接
         user_id = session.get("user_id")
@@ -246,6 +246,14 @@ def user_avatar():
         }
 
     return jsonify(ret)
+
+@user_blu.route("/user/user_follow")
+def user_follow():
+    user_id = session.get("user_id")
+    user = db.session.query(User).filter(User.id == user_id).first()
+    paginate = user.followers.paginate(1,2,False)
+    print(paginate.items, 999999999999999999999)
+    return render_template("user_follow.html", paginate=paginate)
 
 
 
