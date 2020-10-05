@@ -15,7 +15,11 @@
         <ul class="card_list_con">
             {% for user_info in paginate.items %}
             <li class="author_card card_list">
-                <a href="#" target="_blank" class="author_pic"><img src="/static/index/images/cat.jpg" alt="author_pic"></a>
+                {% if user_info.avatar_url %}
+                    <a href="#" target="_blank" class="author_pic"><img src="/static/upload/{{ user_info.avatar_url }}" alt="author_pic"></a>
+                {% else %}
+                    <a href="#" target="_blank" class="author_pic"><img src="/static/index/images/person01.png" alt="author_pic"></a>
+                {% endif %}
                 <a href="#" target="_blank" class="author_name">{{ user_info.nick_name }}</a>
                 <div class="author_resume">{{ user_info.signature }}</div>
                 <div class="writings"><span>总篇数</span><b>{{ user_info.news.count() }}</b></div>
