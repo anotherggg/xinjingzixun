@@ -3,7 +3,7 @@ from flask_migrate import Migrate,MigrateCommand
 from flask_script import Manager
 from gevent.libev.corecext import os
 
-from views import index_blu,passport_blu,user_blu
+from views import index_blu,passport_blu,user_blu,news_blu
 from models import db
 from utils.common import show_top_6_news_style
 
@@ -17,6 +17,7 @@ app.config.from_pyfile("config.ini")
 app.register_blueprint(index_blu)
 app.register_blueprint(passport_blu)
 app.register_blueprint(user_blu)
+app.register_blueprint(news_blu)
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
