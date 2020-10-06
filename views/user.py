@@ -79,7 +79,7 @@ def user_center():
     # 如果用户未登录，禁止访问用户中心
     if not nick_name:
         return redirect(url_for("index_blu.index"))
-    return render_template("user.html", nick_name=nick_name,user=user)
+    return render_template("user.html", nick_name=nick_name, user=user)
 
 
 @user_blu.route("/user/user_base_info")
@@ -176,47 +176,13 @@ def user_head_portrait():
         img.close()
     return image
 
-# @user_blu.route("/user/user_pic_info", methods=["GET", "POST"])
-# def user_pic_info():
-#     user_id = session.get("user_id")
-#     user = db.session.query(User).filter(User.id == user_id).first()
-#     # avatar_url = user.avatar_url
-#     # print(avatar_url,'-'*50)
-#     return render_template("user_pic_info.html")
-#
-#
-# @user_blu.route("/user/avatar", methods=["POST", "POST"])
-# def avatar():
-#     user_id = session.get("user_id")
-#     if user_id:
-#         user = db.session.query(User).filter(User.id == user_id).first()
-#         # avatar_url = user.avatar_url
-#         avatar = request.files.get('avatar')
-#         user_image = Image.open(avatar)
-#         url = "./static/index/images/"
-#         image_file = url + str(user.id)+'head_pic.png'
-#         user.avatar_url = image_file
-#         user_image.save(user.avatar_url)
-#         db.session.commit()
-#         ret = {
-#             "errno":0,
-#             "errmsg":"成功",
-#             "avatar_url": image_file
-#             }
-#         return jsonify(ret)
-#     else:
-#         ret = {
-#             "errno": 4002,
-#             "errmsg": "失败"
-#         }
-#         return jsonify(ret)
-
 
 @user_blu.route("/user/user_pic_info")
 def user_pic_info():
     user_id = session.get("user_id")
     user = db.session.query(User).filter(User.id == user_id).first()
-    return render_template("user_pic_info.html",user=user)
+    return render_template("user_pic_info.html", user=user)
+
 
 @user_blu.route("/user/avatar", methods=["POST"])
 def user_avatar():
@@ -224,11 +190,11 @@ def user_avatar():
     if f:
         # 为了防止多个用户上传的图片名字相同，需要将用户的图片计算出一个随机的用户名，防止冲突
         file_hash = hashlib.md5()
-        file_hash.update((f.filename+str(ctime())).encode("utf-8"))
+        file_hash.update((f.filename + str(ctime())).encode("utf-8"))
         file_name = file_hash.hexdigest() + f.filename[f.filename.rfind("."):]
         avatar_url = file_name
         # 将路径改为static/upload下
-        file_name = "./static/upload/"+file_name
+        file_name = "./static/upload/" + file_name
         f.save(file_name)
         # 修改数据中的用户头像链接
         user_id = session.get("user_id")
@@ -247,20 +213,33 @@ def user_avatar():
 
     return jsonify(ret)
 
+
 @user_blu.route("/user/user_follow")
 def user_follow():
     # 获取当前需要展示的页数
-    page = int(request.args.get("page",1))
+    page = int(request.args.get("page", 1))
     user_id = session.get("user_id")
     user = db.session.query(User).filter(User.id == user_id).first()
-    paginate = user.followers.paginate(page,2,False)
-    print(paginate.items, 999999999999999999999)
-    return render_template("user_follow.html", paginate=paginate)
+    paginate = user.followers.paginate(page, 2, False)
+    # f = db.session.query(Follow).filter(Follow.follower_id == user_id).all()
+    # print(f,'*'*60)
+    list01 = []
+    print(paginate.items, '7' * 60)
+    # for user_info in paginate.items:
+    #     user_info_id = [i.id for i in user_info.followers]
+    #     print(user_info_id,'10'*90)
+    #     if user_id not in user_info_id:
+    #         list01 = True
+    #     else:
+    #         list01 = False
+    # print()
+    for followed in user.followed:
+        list01.append(followed.id)
+    # print(list01,"8"*80)
+
+    return render_template("user_follow.html", paginate=paginate, list01=list01)
 
 
-
-
-
-
-
-
+@user_blu.route("/user/user_collection")
+def user_collection():
+    return render_template("user_collection.html")
