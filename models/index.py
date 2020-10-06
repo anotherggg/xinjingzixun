@@ -2,6 +2,7 @@ from datetime import datetime
 
 from . import db
 
+
 class News(db.Model):
     """新闻"""
     __tablename__ = "news"
@@ -38,6 +39,7 @@ class News(db.Model):
         }
         return ret
 
+
 class Category(db.Model):
     """新闻分类"""
     __tablename__ = "category"
@@ -47,11 +49,20 @@ class Category(db.Model):
     create_time = db.Column(db.DateTime, default=datetime.now)  # 记录的创建时间
     update_time = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)  # 记录的更新时间
 
+
 class Follow(db.Model):
     """用关注表"""
     __tablename__ = "follow"
     followed_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)  # 被关注人的id
     follower_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)  # 被粉丝关注id
+
+
+class Collection(db.Model):
+    __tablename__ = "collection"
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)  # 新闻编号
+    news_id = db.Column(db.Integer, db.ForeignKey("news.id"), primary_key=True)  # 分类编号
+    create_time = db.Column(db.DateTime, default=datetime.now)  # 收藏创建时间
+
 
 class User(db.Model):
     """用户"""
@@ -80,5 +91,7 @@ class User(db.Model):
                                 backref=db.backref('followed', lazy='dynamic'),
                                 lazy='dynamic')
 
-
-
+    collection_news = db.relationship("News",
+                                      secondary=Collection.__table__,
+                                      backref=db.backref('collected_user', lazy='dynamic'),
+                                      lazy='dynamic')
