@@ -56,5 +56,10 @@ def detail(news_id):
         news_author.can_follow = False  # 已经关注了作者，就不能在关注了
     else:
         news_author.can_follow = True  # 可以关注
-    print(22222222222222222222222222222222222222222222222222222222222222222,news_author.can_follow)
+    # 计算当前用户是否收藏了这篇文章
+    news_collected_user_id = [x.id for x in news.collected_user]
+    if user_id in news_collected_user_id:
+        news.can_collect = False
+    else:
+        news.can_collect = True
     return render_template("detail.html", news=news,nick_name=nick_name,news_author=news_author)
