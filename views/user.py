@@ -255,6 +255,11 @@ def user_news_release():
 
 @user_blu.route("/user/release", methods=["POST"])
 def user_release():
+    title = request.json.get("title")
+    category = request.json.get("category")
+    digest = request.json.get("digest")
+    content = request.json.get("content")
+    f = request.files.get("index_image")
     ret = {
         "errno":0,
         "errmsg":"发布成功"
