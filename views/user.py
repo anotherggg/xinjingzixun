@@ -1,5 +1,5 @@
 import hashlib
-from time import ctime, time
+from time import ctime
 
 from flask import jsonify, request, session, render_template, redirect, url_for
 from PIL import Image

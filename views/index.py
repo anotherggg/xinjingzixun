@@ -24,10 +24,10 @@ def category_news():
     per_page = int(request.args.get('per_page', 1))
     # 到数据库查询数据
     if cid == 0:
-        paginate = db.session.query(News).order_by(-News.clicks).paginate(page=page, per_page=per_page, error_out=False)
+        paginate = db.session.query(News).order_by(-News.create_time).paginate(page=page, per_page=per_page, error_out=False)
     else:
         cid += 1
-        paginate = db.session.query(News).filter(News.category_id == cid).paginate(page=page, per_page=per_page,
+        paginate = db.session.query(News).filter(News.category_id == cid).order_by(-News.create_time).paginate(page=page, per_page=per_page,
                                                                                    error_out=False)
 
     ret = {
