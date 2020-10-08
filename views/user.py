@@ -5,7 +5,7 @@ from flask import jsonify, request, session, render_template, redirect, url_for
 from PIL import Image
 from main import basedir
 from models import db
-from models.index import User, Follow
+from models.index import User, Follow, Category
 from utils.image_qiniu import upload_image_to_qiniu
 from . import user_blu
 
@@ -245,3 +245,9 @@ def user_collection():
     # 查询用户收藏的文章
     paginate = user.collection_news.paginate(page,1,False)
     return render_template("user_collection.html",paginate=paginate)
+
+
+@user_blu.route("/user/user_news_release.html")
+def user_news_release():
+    category_list = db.session.query(Category).filter(Category.id != 1).all()
+    return render_template("user_news_release.html", category_list=category_list)
