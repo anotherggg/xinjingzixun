@@ -6,6 +6,7 @@ from PIL import Image
 from main import basedir
 from models import db
 from models.index import User, Follow
+from utils.image_qiniu import upload_image_to_qiniu
 from . import user_blu
 
 
@@ -75,9 +76,10 @@ def follow():
 def user_center():
     user_id = session.get("user_id")
     user = db.session.query(User).filter(User.id == user_id).first()
-    nick_name = session.get("nick_name")
+    nick_name = user.nick_name
+    print(nick_name,'9'*50)
     # 如果用户未登录，禁止访问用户中心
-    if not nick_name:
+    if not user_id:
         return redirect(url_for("index_blu.index"))
     return render_template("user.html", nick_name=nick_name, user=user)
 
@@ -194,12 +196,16 @@ def user_avatar():
         file_name = file_hash.hexdigest() + f.filename[f.filename.rfind("."):]
         avatar_url = file_name
         # 将路径改为static/upload下
-        file_name = "./static/upload/" + file_name
-        f.save(file_name)
+        path_file_name = "./static/upload/" + file_name
+        # 用新的随机的名字当做图片的名字
+        f.save(path_file_name)
+
+        # 将这个图片上传到七牛云
+        qiniu_avatar_url = upload_image_to_qiniu(path_file_name, file_name)
         # 修改数据中的用户头像链接
         user_id = session.get("user_id")
         user = db.session.query(User).filter(User.id == user_id).first()
-        user.avatar_url = avatar_url
+        user.avatar_url = qiniu_avatar_url
         db.session.commit()
         ret = {
             "errno": 0,
@@ -221,22 +227,11 @@ def user_follow():
     user_id = session.get("user_id")
     user = db.session.query(User).filter(User.id == user_id).first()
     paginate = user.followers.paginate(page, 2, False)
-    # f = db.session.query(Follow).filter(Follow.follower_id == user_id).all()
-    # print(f,'*'*60)
     list01 = []
     print(paginate.items, '7' * 60)
-    # for user_info in paginate.items:
-    #     user_info_id = [i.id for i in user_info.followers]
-    #     print(user_info_id,'10'*90)
-    #     if user_id not in user_info_id:
-    #         list01 = True
-    #     else:
-    #         list01 = False
-    # print()
+
     for followed in user.followed:
         list01.append(followed.id)
-    # print(list01,"8"*80)
-
     return render_template("user_follow.html", paginate=paginate, list01=list01)
 
 

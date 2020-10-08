@@ -12,6 +12,13 @@ def news_collect():
     action = request.json.get("action")
     # 2.获取当前用户的id
     user_id = session.get("user_id")
+    if  not user_id:
+        ret = {
+            "errno": 6001,
+            "errmsg": "取消收藏失败"
+        }
+        return jsonify(ret)
+
     # 3.判断是收藏
     if action == "do":
         collection = Collection()

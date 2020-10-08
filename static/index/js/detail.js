@@ -40,7 +40,7 @@ $(function(){
                     // 显示`已收藏`按钮
                     $(".collected").show();
                 }
-                else if (resp.errno == "5002") {
+                else if (resp.errno == "6001") {
                     // 用户登录
                     $(".login_form_con").show();
                 }

@@ -92,15 +92,16 @@ $(function(){
 			$('#main_frame').css({'height':660});
 		}
 		$(this).addClass('active').siblings().removeClass('active');
-		$(this).find('a')[0].click()
+		//$(this).find('a')[0].click()
 	})
 
     // 登录表单提交
     $(".login_form_con").submit(function (e) {
         e.preventDefault()
         var mobile = $(".login_form #mobile").val();
+        console.log(mobile)
         var password = $(".login_form #password").val();
-
+        console.log(password)
         if (!mobile) {
             $("#login-mobile-err").show();
             return;
