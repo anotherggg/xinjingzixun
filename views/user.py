@@ -290,3 +290,8 @@ def user_release():
         "errmsg":"发布成功"
     }
     return jsonify(ret)
+
+
+@user_blu.route("/user/user_news_list.html")
+def user_news_list():
+    return render_template("user_news_list.html")
