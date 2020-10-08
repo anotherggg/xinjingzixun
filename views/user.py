@@ -5,7 +5,7 @@ from flask import jsonify, request, session, render_template, redirect, url_for
 from PIL import Image
 from main import basedir
 from models import db
-from models.index import User, Follow, Category
+from models.index import User, Follow, Category, News
 from utils.image_qiniu import upload_image_to_qiniu
 from . import user_blu
 
@@ -255,11 +255,22 @@ def user_news_release():
 
 @user_blu.route("/user/release", methods=["POST"])
 def user_release():
-    title = request.json.get("title")
-    category = request.json.get("category")
-    digest = request.json.get("digest")
-    content = request.json.get("content")
+    title = request.form.get("title")
+    category = request.form.get("category")
+    digest = request.form.get("digest")
+    content = request.form.get("content")
     f = request.files.get("index_image")
+    news = News()
+    news.title = title
+    news.category_id = category
+    news.source = "个人发布"
+    news.digest = digest
+    news.content = content
+    news.user_id = session.get("user_id")
+    news.status = 1
+
+    db.session.add(news)
+    db.session.commit()
     ret = {
         "errno":0,
         "errmsg":"发布成功"
