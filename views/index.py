@@ -4,7 +4,7 @@ from . import index_blu
 
 from models import db
 
-from models.index import News
+from models.index import News, Comment
 
 
 @index_blu.route("/")
@@ -50,6 +50,8 @@ def detail(news_id):
     # 查询用户是否已经登录
     user_id = session.get("user_id", 0)
     nick_name = session.get("nick_name", "")
+    # 获取评论
+    comments = news.comments.order_by(-Comment.create_time)
 
     # 计算当前登录用户是否已经关注了这个新闻的作者
     news_author_followers_id = [x.id for x in news_author.followers]
@@ -63,4 +65,4 @@ def detail(news_id):
         news.can_collect = False
     else:
         news.can_collect = True
-    return render_template("detail.html", news=news,nick_name=nick_name,news_author=news_author,clicks_top_6_news=clicks_top_6_news)
+    return render_template("detail.html", news=news,nick_name=nick_name,news_author=news_author,clicks_top_6_news=clicks_top_6_news,comments=comments)
