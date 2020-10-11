@@ -1,10 +1,11 @@
 from flask import render_template, jsonify, request, session
 
+
 from . import index_blu
 
 from models import db
 
-from models.index import News, Comment
+from models.index import News, Comment,User
 
 
 @index_blu.route("/")
@@ -52,7 +53,9 @@ def detail(news_id):
     nick_name = session.get("nick_name", "")
     # 获取评论
     comments = news.comments.order_by(-Comment.create_time)
-
+    # 获取用户对象
+    user = db.session.query(User).filter(User.id == user_id).first()
+    like_comment =user.like_comment
     # 计算当前登录用户是否已经关注了这个新闻的作者
     news_author_followers_id = [x.id for x in news_author.followers]
     if user_id in news_author_followers_id:
@@ -65,4 +68,4 @@ def detail(news_id):
         news.can_collect = False
     else:
         news.can_collect = True
-    return render_template("detail.html", news=news,nick_name=nick_name,news_author=news_author,clicks_top_6_news=clicks_top_6_news,comments=comments)
+    return render_template("detail.html", news=news,nick_name=nick_name,news_author=news_author,clicks_top_6_news=clicks_top_6_news,comments=comments,like_comment=like_comment)
