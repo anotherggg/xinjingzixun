@@ -1,7 +1,7 @@
 from flask import jsonify, request, session
 
 from models import db
-from models.index import Collection, Comment
+from models.index import Collection, Comment,CommentLike
 from . import news_blu
 
 
@@ -74,4 +74,42 @@ def news_comment():
         "errno": 0,
         "errmsg": "成功"
     }
+    return jsonify(ret)
+
+
+@news_blu.route("/news/comment_like", methods=["POST"])
+def news_comment_like():
+    user_id = session.get("user_id")
+    action = request.json.get("action")
+    comment_id = request.json.get("comment_id")
+    if action == "do":
+        comment_like = CommentLike()
+        comment_like.user_id =user_id
+        comment_like.comment_id = comment_id
+        try:
+            db.session.add(comment_like)
+            db.session.commit()
+            ret = {
+                "errno": 0,
+                "errmsg": "点赞成功"
+            }
+        except Exception as ret:
+            ret = {
+                "errno": 7002,
+                "errmsg": "点赞失败"
+            }
+    elif action == "undo":
+        comment_like = db.session.query(CommentLike).filter(CommentLike.user_id==user_id,CommentLike.comment_id==comment_id).first()
+        if comment_like:
+            db.session.delete(comment_like)
+            db.session.commit()
+            ret = {
+                "errno": 0,
+                "errmsg": "取消点赞成功"
+            }
+        else:
+            ret = {
+                "errno": 7001,
+                "errmsg": "取消点赞失败"
+            }
     return jsonify(ret)
