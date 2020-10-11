@@ -41,6 +41,7 @@ def category_news():
 @index_blu.route("/detail/<int:news_id>")
 def detail(news_id):
     # 查询点击量最多的前6个新闻信息
+    clicks_top_6_news = db.session.query(News).order_by(-News.clicks).limit(6)
     news = db.session.query(News).filter(News.id == news_id).first()
     # 查询这个新闻的作者
     news_author = news.user
@@ -62,4 +63,4 @@ def detail(news_id):
         news.can_collect = False
     else:
         news.can_collect = True
-    return render_template("detail.html", news=news,nick_name=nick_name,news_author=news_author)
+    return render_template("detail.html", news=news,nick_name=nick_name,news_author=news_author,clicks_top_6_news=clicks_top_6_news)

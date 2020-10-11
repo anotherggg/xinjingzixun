@@ -75,7 +75,7 @@ def login():
         session['nick_name'] = mobile
     else:
         ret = {
-            "errno": 0,
+            "errno": 2001,
             "errmsg": "用户名或者密码错误"
         }
 

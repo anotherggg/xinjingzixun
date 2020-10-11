@@ -79,7 +79,7 @@
 <!--                        遏制茅台酒价格过快上涨，多渠道供给，就不一定要买，租茅台酒也可以的，租售同权。开发共有产权茅台酒，让老百姓喝得起茅台酒，饮者有其酒。-->
 <!--                    </div>-->
 <!--                </div>-->
-                <div class="comment_time fl">2017-01-01 00:00:00</div>
+                <div class="comment_time fl">{{ comment.create_time }}</div>
                 <a href="javascript:;" class="comment_up has_comment_up fr">1</a>
                 <a href="javascript:;" class="comment_reply fr">回复</a>
                 <from class="reply_form fl">
@@ -110,12 +110,15 @@
                 <h3>点击排行</h3>
             </div>
             <ul class="rank_list">
-                <li><span class="first">1</span><a href="#">势如破竹！人民币再度连闯四道关口 在岸、离岸双双升破6.42</a></li>
-                <li><span class="second">2</span><a href="#">凛冬已至，还有多少银行人在假装干银行</a></li>
-                <li><span class="third">3</span><a href="#">人民日报：部分城市楼市放松限制引关注，楼市调控不会“拉抽屉”</a></li>
-                <li><span>4</span><a href="#">势如破竹！人民币再度连闯四道关口 在岸、离岸双双升破6.42</a></li>
-                <li><span>5</span><a href="#">凛冬已至，还有多少银行人在假装干银行</a></li>
-                <li><span>6</span><a href="#">人民日报：部分城市楼市放松限制引关注，楼市调控不会“拉抽屉”</a></li>
+                {% for new in clicks_top_6_news %}
+                <li><span class="{{loop.index | show_top_6_news_style}}">{{loop.index}}</span><a href="http://127.0.0.1:5000/detail/{{ new.id }}">{{new.title}}</a></li>
+<!--                <li><span class="first">1</span><a href="#">势如破竹！人民币再度连闯四道关口 在岸、离岸双双升破6.42</a></li>-->
+<!--                <li><span class="second">2</span><a href="#">凛冬已至，还有多少银行人在假装干银行</a></li>-->
+<!--                <li><span class="third">3</span><a href="#">人民日报：部分城市楼市放松限制引关注，楼市调控不会“拉抽屉”</a></li>-->
+<!--                <li><span>4</span><a href="#">势如破竹！人民币再度连闯四道关口 在岸、离岸双双升破6.42</a></li>-->
+<!--                <li><span>5</span><a href="#">凛冬已至，还有多少银行人在假装干银行</a></li>-->
+<!--                <li><span>6</span><a href="#">人民日报：部分城市楼市放松限制引关注，楼市调控不会“拉抽屉”</a></li>-->
+                {% endfor %}
             </ul>
         </div>
     </div>
@@ -143,11 +146,11 @@
                 <a href="javascript:;" class="shutoff"></a>
             </div>
             <div class="form_group">                
-                <input type="text" id="mobile" name="username" autocomplete="off">
+                <input type="text"  name="username" autocomplete="off">
                 <div class="input_tip">用户名/手机号</div>
             </div>
             <div class="form_group">                
-                <input type="password" name="password" id="password">
+                <input type="password" name="password" >
                 <div class="input_tip">密码(不少于6位)</div>
             </div>
             <input type="submit" name="" value="登 录" class="input_sub">
