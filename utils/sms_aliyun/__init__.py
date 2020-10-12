@@ -4,7 +4,7 @@
 from aliyunsdkcore.client import AcsClient
 from aliyunsdkcore.request import CommonRequest
 
-def send_msg_to_phone(phone_num,content)
+def send_msg_to_phone(phone_num,content):
     client = AcsClient('<accessKeyId>', '<accessSecret>', 'cn-hangzhou')
 
     request = CommonRequest()
