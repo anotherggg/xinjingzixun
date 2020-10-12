@@ -5,7 +5,7 @@ from aliyunsdkcore.client import AcsClient
 from aliyunsdkcore.request import CommonRequest
 
 def send_msg_to_phone(phone_num,content):
-    client = AcsClient('<accessKeyId>', '<accessSecret>', 'cn-hangzhou')
+    client = AcsClient('LTAI4G7crqzymQNdW2GMg3Hx', 'zhuw25iiXy7dr5UI34KDPv6jq0TNC7', 'cn-hangzhou')
 
     request = CommonRequest()
     request.set_accept_format('json')
@@ -17,8 +17,8 @@ def send_msg_to_phone(phone_num,content):
 
     request.add_query_param('RegionId', "cn-hangzhou")
     request.add_query_param('PhoneNumbers', phone_num)
-    request.add_query_param('SignName', "dong4716138")
-    request.add_query_param('TemplateCode', "SMS_167532197")
+    request.add_query_param('SignName', "新经咨询学习使用验证")
+    request.add_query_param('TemplateCode', "SMS_204286276")
     request.add_query_param('TemplateParam', "{\"code\":\"%s\"}" % content)
 
     response = client.do_action(request)
