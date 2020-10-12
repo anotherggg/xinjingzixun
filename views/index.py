@@ -14,7 +14,7 @@ def index():
     # 查询用户是否已经登录
     user_id = session.get("uesr_id",0)
     nick_name = session.get("nick_name","")
-    return render_template("index.html", clicks_top_6_news=clicks_top_6_news,nick_name = nick_name)
+    return render_template("index/index.html", clicks_top_6_news=clicks_top_6_news, nick_name = nick_name)
 
 
 @index_blu.route("/newslist")
@@ -68,4 +68,4 @@ def detail(news_id):
         news.can_collect = False
     else:
         news.can_collect = True
-    return render_template("detail.html", news=news,nick_name=nick_name,news_author=news_author,clicks_top_6_news=clicks_top_6_news,comments=comments,like_comment=like_comment)
+    return render_template("index/detail.html", news=news, nick_name=nick_name, news_author=news_author, clicks_top_6_news=clicks_top_6_news, comments=comments, like_comment=like_comment)
