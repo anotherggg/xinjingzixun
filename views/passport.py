@@ -18,6 +18,7 @@ def register():
     smscode = request.json.get("smscode")
     # 2. 测试数据
     print(mobile, password, image_code, smscode)
+    print(session.get("image_code"),'8'*90)
 
     # 验证图片验证码是否正确
     if session.get("image_code") != image_code:
@@ -29,8 +30,11 @@ def register():
 
     # 创建一个新用户
     # 查询是否有这个相同的用户
-    if db.session.query(User).filter().first():
-        return "已经注册过了"
+    if db.session.query(User).filter(User.mobile == mobile).first():
+        return jsonify({
+            "errno": 1001,
+            "errmsg": "已经注册..."
+        })
 
     # 注册用户为未注册用户
     # 将新用户的数据插入到数据库
@@ -40,6 +44,7 @@ def register():
     user.mobile = mobile
     try:
         db.session.add(user)
+        print('8'*90)
         db.session.commit()
         # 注册成功后，立刻认为登录成功，也就是说需要进行状态保持
         session['user_id'] = user.id
@@ -53,7 +58,7 @@ def register():
         print("---->", ret)
         db.session.rollback()
         ret = {
-            "errno": 0,
+            "errno": 1002,
             "errmsg": "注册失败..."
         }
 
