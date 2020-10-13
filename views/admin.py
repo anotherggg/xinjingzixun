@@ -46,6 +46,22 @@ def news_edit_detail():
     return render_template("admin/news_edit_detail.html",news=news,categorys=category)
 
 
+@admin_blu.route("/admin/news_edit_detail/<int:news_id>",methods=["POST"])
+def save_news(news_id):
+    # 更新新闻
+    news = db.session.query(News).filter(News.id == news_id).first()
+    if not news:
+        ret = {
+            "errno": 5003,
+            "errmsg": "修改失败"
+        }
+        return jsonify(ret)
+    ret = {
+        "errno":0,
+        "errmsg": "修改成功"
+    }
+    return jsonify(ret)
+
 
 @admin_blu.route("/news_type.html")
 def news_type():
