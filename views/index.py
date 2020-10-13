@@ -5,7 +5,7 @@ from . import index_blu
 
 from models import db
 
-from models.index import News, Comment,User
+from models.index import News, Comment, User, Category
 
 
 @index_blu.route("/")
@@ -14,7 +14,9 @@ def index():
     # 查询用户是否已经登录
     user_id = session.get("uesr_id",0)
     nick_name = session.get("nick_name","")
-    return render_template("index/index.html", clicks_top_6_news=clicks_top_6_news, nick_name = nick_name)
+    # 查询分类
+    category = db.session.query(Category).filter(Category.id != 1).all()
+    return render_template("index/index.html", clicks_top_6_news=clicks_top_6_news, nick_name=nick_name,category=category)
 
 
 @index_blu.route("/newslist")
@@ -24,13 +26,11 @@ def category_news():
     cid = int(request.args.get('cid', 0))
     per_page = int(request.args.get('per_page', 1))
     # 到数据库查询数据
-    if cid == 0:
+    if cid == 1:
         paginate = db.session.query(News).filter(News.status == 0).order_by(-News.create_time).paginate(page=page, per_page=per_page, error_out=False)
     else:
-        cid += 1
         paginate = db.session.query(News).filter(News.category_id == cid,News.status == 0).order_by(-News.create_time).paginate(page=page, per_page=per_page,
                                                                                    error_out=False)
-
     ret = {
         "totalPage": paginate.pages,
         "newsList": [news.to_dict() for news in paginate.items]
