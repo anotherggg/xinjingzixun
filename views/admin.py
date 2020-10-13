@@ -46,6 +46,7 @@ def news_edit_detail():
     return render_template("admin/news_edit_detail.html",news=news,categorys=category)
 
 
+
 @admin_blu.route("/news_type.html")
 def news_type():
     news_types = db.session.query(Category).filter(Category.id != 1).all()
