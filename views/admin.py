@@ -28,9 +28,22 @@ def news_review():
 @admin_blu.route("/news_edit.html")
 def news_edit():
     page = int(request.args.get("page",1))
+    # 分页读取
     paginate = db.session.query(News).paginate(page,5,False)
+    # 获取所有的的新闻
     news = db.session.query(News).filter().all()
     return render_template("admin/news_edit.html",paginate=paginate)
+
+
+@admin_blu.route("/news_edit_detail.html")
+def news_edit_detail():
+    # 获取需要编辑的新闻的id
+    new_id = request.args.get("id")
+    # 获取对应的新闻
+    news = db.session.query(News).filter(News.id == new_id).first()
+    # 获取新闻分类
+    category = db.session.query(Category).filter(Category.id != 1).all()
+    return render_template("admin/news_edit_detail.html",news=news,categorys=category)
 
 
 @admin_blu.route("/news_type.html")
