@@ -56,10 +56,10 @@
         <script>
 			$(function() {
 				$("#pagination").pagination({
-					currentPage: 2,
-					totalPage: 3,
+					currentPage: {{ paginate.page }},
+					totalPage: {{ paginate.pages }},
 					callback: function(current) {
-					    alert('ok!');
+					    window.location.href="?page=" + current
 					}
 				});
 			});
