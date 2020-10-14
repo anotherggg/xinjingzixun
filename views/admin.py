@@ -22,7 +22,10 @@ def user_list():
 
 @admin_blu.route("/news_review.html")
 def news_review():
-    return render_template("admin/news_review.html")
+    page = int(request.args.get("page",1))
+    # 分页读取
+    paginate = db.session.query(News).paginate(page,5,False)
+    return render_template("admin/news_review.html",paginate=paginate)
 
 
 @admin_blu.route("/news_edit.html")
@@ -30,8 +33,6 @@ def news_edit():
     page = int(request.args.get("page",1))
     # 分页读取
     paginate = db.session.query(News).paginate(page,5,False)
-    # 获取所有的的新闻
-    news = db.session.query(News).filter().all()
     return render_template("admin/news_edit.html",paginate=paginate)
 
 
