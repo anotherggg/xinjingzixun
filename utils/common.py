@@ -26,3 +26,17 @@ def show_news_status_style_name(index):
     elif index == -1:
         return "nopass"
     return ""
+
+
+def show_top_7_news_style(index):
+    if index == 2:
+        return "股市"
+    elif index == 3:
+        return "债市"
+    elif index == 4:
+        return "商品"
+    elif index == 3:
+        return "外汇"
+    elif index == 4:
+        return "公司"
+    return ""

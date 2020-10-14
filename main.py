@@ -5,7 +5,7 @@ from gevent.libev.corecext import os
 
 from views import index_blu,passport_blu,user_blu,news_blu,admin_blu
 from models import db
-from utils.common import show_top_6_news_style,show_news_status_name,show_news_status_style_name
+from utils.common import show_top_6_news_style,show_news_status_name,show_news_status_style_name,show_top_7_news_style
 
 # 创建flask应用对象
 app = Flask(__name__)
@@ -29,6 +29,7 @@ db.init_app(app)
 app.add_template_filter(show_top_6_news_style)
 app.add_template_filter(show_news_status_name)
 app.add_template_filter(show_news_status_style_name)
+app.add_template_filter(show_top_7_news_style)
 # 添加数据库迁移等工具
 manager = Manager(app)
 # 生成migrate对象，用来数据库迁移
