@@ -23,7 +23,12 @@ def user_count():
     month = now_date.month
     month_count = db.session.query(User).filter(extract('year',User.create_time) == year,
                                             extract('month',User.create_time) == month).count()
-    return render_template("admin/user_count.html",total_count=total_count,month_count=month_count)
+    # 统计当日用户新增量
+    day = now_date.day
+    day_count = db.session.query(User).filter(extract('year',User.create_time) == year,
+                                            extract('month',User.create_time) == month,
+                                            extract('day',User.create_time) == day).count()
+    return render_template("admin/user_count.html",total_count=total_count,month_count=month_count,day_count=day_count)
 
 
 @admin_blu.route("/user_list.html")
