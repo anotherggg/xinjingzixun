@@ -12,7 +12,9 @@ def admin():
 
 @admin_blu.route("/user_count.html")
 def user_count():
-    return render_template("admin/user_count.html")
+    # 获取用户人数
+    total_count = db.session.query(User).count()
+    return render_template("admin/user_count.html",total_count=total_count)
 
 
 @admin_blu.route("/user_list.html")
