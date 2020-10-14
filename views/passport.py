@@ -18,7 +18,7 @@ def register():
     smscode = request.json.get("smscode")
     # 2. 测试数据
     print(mobile, password, image_code, smscode)
-    print(session.get("image_code"),'8'*90)
+    print(session.get("image_code"), '8' * 90)
 
     # 验证图片验证码是否正确
     if session.get("image_code") != image_code:
@@ -44,7 +44,7 @@ def register():
     user.mobile = mobile
     try:
         db.session.add(user)
-        print('8'*90)
+        print('8' * 90)
         db.session.commit()
         # 注册成功后，立刻认为登录成功，也就是说需要进行状态保持
         session['user_id'] = user.id
@@ -71,7 +71,9 @@ def login():
     mobile = request.json.get("mobile")
     password = request.json.get("password")
     # 2.查询，如果存在表示登录成功，否则失败
-    user = db.session.query(User).filter(User.mobile == mobile , User.password_hash == password).first()
+    user = db.session.query(User).filter(User.mobile == mobile).first()
+    print(user, '8' * 80)
+    print(check_password_hash(user.password_hash, password), '9' * 80)
     if user and check_password_hash(user.password_hash, password):
         ret = {
             "errno": 0,
@@ -88,25 +90,27 @@ def login():
 
     return jsonify(ret)
 
+
 @passport_blu.route("/passport/logout", methods=["GET", "POST"])
 def logout():
     # 清空登录状态
     session.clear()
     return redirect(url_for('index_blu.index'))
 
+
 @passport_blu.route("/passport/image_code")
 def image_code():
     from utils.captcha.captcha import captcha
 
     # 读取一个图片
-    with open("./yanzhengma.png",'rb') as f:
+    with open("./yanzhengma.png", 'rb') as f:
         image = f.read()
 
     # 生成验证码
     # hash值 验证码值 图片内容
-    name,text,image = captcha.generate_captcha()
+    name, text, image = captcha.generate_captcha()
 
-    print("刚刚生成的验证码",text)
+    print("刚刚生成的验证码", text)
 
     # 通过session的方式,缓存刚刚生成的验证码，否则注册时不知道刚刚生成的是多少
     session["image_code"] = text
@@ -133,9 +137,9 @@ def smscode():
             "errmsg": "图片验证码错误，请重新输入"
         }
         return jsonify(ret)
-    print("短信验证码：",image_code)
+    print("短信验证码：", image_code)
     # 3.生成一个随机的6位数
-    sms_code = random.randint(100000,999999)
+    sms_code = random.randint(100000, 999999)
     # 4.存储到session中
     session["sms_code"] = sms_code
     # 5.通过短信发送这个6位数
@@ -146,4 +150,3 @@ def smscode():
     }
 
     return jsonify(ret)
-
