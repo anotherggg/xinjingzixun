@@ -1,4 +1,7 @@
 from flask import render_template, jsonify, request
+from datetime import datetime
+
+from sqlalchemy import extract
 
 from models import db
 from models.index import Category, News, User
@@ -14,7 +17,13 @@ def admin():
 def user_count():
     # 获取用户人数
     total_count = db.session.query(User).count()
-    return render_template("admin/user_count.html",total_count=total_count)
+    # 统计当月用户新增量
+    now_date = datetime.now()
+    year = now_date.year
+    month = now_date.month
+    month_count = db.session.query(User).filter(extract('year',User.create_time) == year,
+                                            extract('month',User.create_time) == month).count()
+    return render_template("admin/user_count.html",total_count=total_count,month_count=month_count)
 
 
 @admin_blu.route("/user_list.html")
