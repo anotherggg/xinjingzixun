@@ -1,4 +1,4 @@
-from flask import render_template, jsonify, request
+from flask import render_template, jsonify, request, session, redirect
 from datetime import datetime,timedelta
 
 from sqlalchemy import extract
@@ -10,7 +10,12 @@ from . import admin_blu
 
 @admin_blu.route("/admin")
 def admin():
-    return render_template("admin/index.html")
+    # 获取用户id
+    user_id = session.get("user_id")
+    user = db.session.query(User).filter(User.id == user_id).first()
+    if not user:
+        redirect("index_blu.index")
+    return render_template("admin/index.html",user=user)
 
 
 @admin_blu.route("/user_count.html")
