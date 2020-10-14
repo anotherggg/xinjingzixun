@@ -1,7 +1,7 @@
 from flask import render_template, jsonify, request
 
 from models import db
-from models.index import Category, News
+from models.index import Category, News, User
 from . import admin_blu
 
 
@@ -17,7 +17,10 @@ def user_count():
 
 @admin_blu.route("/user_list.html")
 def user_list():
-    return render_template("admin/user_list.html")
+    page = int(request.args.get("page",1))
+    # 获取用户信息
+    paginate = db.session.query(User).paginate(page,5,False)
+    return render_template("admin/user_list.html",paginate=paginate)
 
 
 @admin_blu.route("/news_review.html")
